@@ -1,9 +1,9 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 dotenv.config();
 
 // Function to generate a random API key
-function generateRandomAPIKey(length = process.env.API_KEY_LENGTH) {
+export function generateRandomAPIKey(length = process.env.API_KEY_LENGTH) {
 	const charset =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-";
 	let apiKey = "";
