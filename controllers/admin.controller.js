@@ -43,9 +43,6 @@ export const createKey = async (req, res) => {
 				apiKey,
 				modelType,
 				apiKeyDescription,
-				chatEndpoint,
-				sentimentEndpoint,
-				analyticsEndpoint,
 				projectId: id,
 			},
 		});
@@ -136,32 +133,29 @@ export const editProject = async (req, res) => {
 				title,
 				description,
 			},
-			include: {
-				userProjectRelation: {
+			select: {
+				userProjects: {
 					select: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									name: true,
-									email: true,
-									picture: true,
-								},
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+								picture: true,
 							},
 						},
 						isAdmin: true,
 					},
 				},
 				primaryApiKey: true,
+				chatEndpoint: true,
+				analyticsEndpoint: true,
 				apiKeys: {
 					select: {
 						id: true,
 						apiKey: true,
 						modelType: true,
 						apiKeyDescription: true,
-						chatEndpoint: true,
-						sentimentEndpoint: true,
-						analyticsEndpoint: true,
 					},
 				},
 				actions: {
@@ -189,32 +183,29 @@ export const getProject = async (req, res) => {
 			where: {
 				id,
 			},
-			include: {
-				userProjectRelation: {
+			select: {
+				userProjects: {
 					select: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									name: true,
-									email: true,
-									picture: true,
-								},
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+								picture: true,
 							},
 						},
 						isAdmin: true,
 					},
 				},
-				primaryApiKey : true,
+				primaryApiKey: true,
+				chatEndpoint: true,
+				analyticsEndpoint: true,
 				apiKeys: {
 					select: {
 						id: true,
 						apiKey: true,
 						modelType: true,
 						apiKeyDescription: true,
-						chatEndpoint: true,
-						sentimentEndpoint: true,
-						analyticsEndpoint: true,
 					},
 				},
 				actions: {
@@ -244,7 +235,6 @@ export const createProject = async (req, res) => {
 			data: {
 				title,
 				description,
-				pitch,
 				primaryApiKey
 			},
 		});
@@ -259,34 +249,31 @@ export const createProject = async (req, res) => {
 
 		const resp = await prisma.project.findUnique({
 			where: {
-				id,
+				id: project.id,
 			},
-			include: {
-				userProjectRelation: {
+			select: {
+				userProjects: {
 					select: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									name: true,
-									email: true,
-									picture: true,
-								},
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+								picture: true,
 							},
 						},
 						isAdmin: true,
 					},
 				},
-				primaryApiKey : true,
+				primaryApiKey: true,
+				chatEndpoint: true,
+				analyticsEndpoint: true,
 				apiKeys: {
 					select: {
 						id: true,
 						apiKey: true,
 						modelType: true,
 						apiKeyDescription: true,
-						chatEndpoint: true,
-						sentimentEndpoint: true,
-						analyticsEndpoint: true,
 					},
 				},
 				actions: {

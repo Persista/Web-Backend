@@ -22,7 +22,6 @@ export const getLLMResponse = async (req, res) => {
         isFirst = false;
         if(context[User].lenght>0) isFalse = true;
 
-
         const action = await prisma.action.findUnique({
             where: {
                 id: actionId
