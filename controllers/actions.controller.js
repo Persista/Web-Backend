@@ -22,6 +22,16 @@ export const getAllActions = async (req, res) => {
             where: {
                 projectId
             },
+            include: {
+                project: {
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        primaryApiKey: true,
+                    }
+                }
+            }
         });
         response_200(res, actions);
     } catch (error) {
@@ -126,3 +136,36 @@ export const editAction = async (req, res) => {
         response_500(res, error);
     }
 }
+
+export const editEndpoints = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { chatEndpoint, analyticsEndpoint } = req.body;
+
+		if (!chatEndpoint && !analyticsEndpoint) {
+			return response_404(res, "Endpoints not found");
+		}
+
+		const data = {};
+
+		if (chatEndpoint) {
+			data.chatEndpoint = chatEndpoint;
+		}
+
+		if (analyticsEndpoint) {
+			data.analyticsEndpoint = analyticsEndpoint;
+		}
+
+		const project = await prisma.project.update({
+			where: {
+				id,
+			},
+			data,
+		});
+
+		response_200(res, project);
+	} catch (error) {
+		console.log(error);
+		response_500(res, error);
+	}
+};
