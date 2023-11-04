@@ -17,12 +17,13 @@ const getQuery = (query, project, action, isFirst) => {
 
 export const getLLMResponse = async (req, res) => {
   try {
-    const { actionId, context, query } = req.body;
+    const { actionId, context, chatId, question, answer } = req.body;
+
+    isFirst = false;
 
     model = "llamma";
 
-    isFirst = false;
-    if (context[User].lenght > 0) isFalse = true;
+    if (context[User].length == 0) isFirst = true;
 
     const action = await prisma.action.findUnique({
       where: {
@@ -39,14 +40,35 @@ export const getLLMResponse = async (req, res) => {
     if (!project || !action)
       return response_404(res, "Project or Action not found");
 
+    var response = ""
     if (model === "llamma") {
-      const response = await axios.post(project.chatEndpoint, {
+      response = await axios.post(project.chatEndpoint, {
         query: getQuery(query, project, action, isFirst),
         context: action.pitch,
         history: objectToString(context),
+        id: chatId,
+        instruction: action.instruction,
       });
-      response_200(res, response.data);
     }
+
+    var message = await prisma.message.create({
+			data: {
+				chatId: chatId,
+				message: answer,
+				sentiment: response.data.sentiment_score,
+				isUser: true,
+			},
+		});
+
+    message = await prisma.message.create({
+      data: {
+        chatId: chatId,
+        message: response.data.result,
+        isUser: false,
+      },
+    });
+    
+    response_200(res, response.data);
   } catch (error) {
     console.log(error);
     response_500(res, error);
@@ -75,6 +97,20 @@ export const createChat = async (req, res) => {
     if (!project || !action)
       return response_404(res, "Project or Action not found");
 
+    const chat = await prisma.chat.create({
+      data: {
+        actionId: actionId,
+      },
+    });
+
+    const message = await prisma.message.create({
+			data: {
+				chatId: chat.id,
+				message: query,
+        isUser: false,
+      },
+		});
+    
     response_200(res, {
       result: action.firstQuery,
     });

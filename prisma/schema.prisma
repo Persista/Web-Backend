@@ -52,7 +52,7 @@ model ApiKey {
     updatedAt DateTime @updatedAt
     project   Project     @relation(fields: [projectId], references: [id])
     projectId String
-    modelType ModelType
+    modelType ModelType @default(Llamma2)
     apiKey String
     apiKeyDescription String? @db.LongText
 }
@@ -68,8 +68,14 @@ model Action {
     description String  @db.LongText
     pitch String @db.LongText
     chats Chat[]
+    similarWords String @db.LongText
 }
 
+enum ChatStatus {
+    POSITIVE
+    NEGATIVE
+    INDETERMINATE
+}
 model Chat {
     id        String      @id @default(uuid())
     createdAt DateTime @default(now())
@@ -77,6 +83,7 @@ model Chat {
     action  Action     @relation(fields: [actionId], references: [id])
     actionId String
     messages Messages[] @relation("Messages")
+    status ChatStatus @default(INDETERMINATE)
 }
 
 model Messages {
@@ -87,4 +94,5 @@ model Messages {
     chatId String
     message String  @db.LongText
     isUser Boolean
+    sentiment Float? @default(0)
 }

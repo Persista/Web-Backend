@@ -3,18 +3,10 @@ const testObject = {
   User: ["e", "f", "g", "h", "i", "j", "k"],
 };
 
-const testString = "User:e;f;g;h;i;j;k;";
-
 export function objectToString(data) {
-  const userArray = data.User;
-
-  let res = "User:";
-
-  let answers = userArray.join(";");
-
-  res += answers + ";";
-
-  return res;
+  for(key in data) {
+    data[key] = data[key].join(";");
+  }
 }
 
 export function stringToObject(string) {

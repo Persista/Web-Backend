@@ -10,7 +10,7 @@ import { editEndpoints } from "../../controllers/actions.controller.js";
 
 var router = Router();
 
-router.use("/admin", verifyAdmin, adminRouter);
+router.use("/admin", verifyUser, adminRouter);
 router.use("/auth", authRouter);
 router.post("/project", verifyUser, createProject)
 router.patch("/project/:id", verifyUser, editEndpoints);
