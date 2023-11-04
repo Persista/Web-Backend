@@ -34,6 +34,8 @@ model Project {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     primaryApiKeyHash String
+    chatEndpoint String?
+    analyticsEndpoint String?
     userProjects UserProjectRelation[]
     apiKeys ApiKey[]
     actions Action[]
@@ -53,13 +55,11 @@ model ApiKey {
     modelType ModelType
     apiKey String
     apiKeyDescription String?
-    chatEndpoint String?
-    sentimentEndpoint String?
-    analyticsEndpoint String?
 }
 
 model Action {
     id        String      @id @default(uuid())
+    firstQuery String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     project   Project     @relation(fields: [projectId], references: [id])
@@ -67,5 +67,24 @@ model Action {
     title String
     description String
     pitch String
+    chats Chat[]
 }
 
+model Chat {
+    id        String      @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    action  Action     @relation(fields: [actionId], references: [id])
+    actionId String
+    messages Messages[] @relation("Messages")
+}
+
+model Messages {
+    id        String      @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    chat Chat @relation("Messages", fields: [chatId], references: [id])
+    chatId String
+    message String
+    isUser Boolean
+}

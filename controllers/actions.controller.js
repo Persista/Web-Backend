@@ -33,15 +33,16 @@ export const getAllActions = async (req, res) => {
 export const createAction = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { title, description, pitch } = req.body;
+        const { title, description, pitch, firstQuery } = req.body;
         const action = await prisma.action.create({
-            data: {
-                title,
-                description,
-                pitch,
-                projectId
-            },
-        });
+					data: {
+						title,
+						description,
+						pitch,
+						projectId,
+						firstQuery,
+					},
+				});
         response_201(res, action);
     } catch (error) {
         console.log(error);
@@ -71,6 +72,17 @@ export const getAction = async (req, res) => {
             where: {
                 id
             },
+            include:{
+                project : {
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        pitch: true,
+                        primaryApiKey: true,
+                    }
+                } 
+            }
         });
         response_200(res, action);
     } catch (error) {

@@ -27,8 +27,8 @@ const tokenTransfer = async (req, res) => {
 	}
 
 	const params = {
-		client_id: process.env.CLIENT_ID,
-		client_secret: process.env.CLIENT_SECRET,
+		client_id: process.env.GITHUB_CLIENT_ID,
+		client_secret: process.env.GITHUB_CLIENT_SECRET,
 		code: AUTH_CODE,
 	};
 
@@ -45,12 +45,14 @@ const tokenTransfer = async (req, res) => {
 		opts.headers.Authorization = `Bearer ${accessToken}`;
 		const userGitHub = await axios.get("https://api.github.com/user", opts);
 		const userGitHubData = userGitHub.data;
+		
+		console.log(userGitHubData);
 
 		let userDBData = {};
 		try {
 			const userData = await prisma.user.findUnique({
 				where: {
-					githubId: userGitHubData.id.toString(),
+					email: userGitHubData.email.toString(),
 				},
 			});
 
@@ -58,17 +60,21 @@ const tokenTransfer = async (req, res) => {
 				userDBData = userData;
 			}
 
+			else{
+				userDBData = await prisma.user.create({
+					data: {
+						name: userGitHubData.name,
+						email: userGitHubData.email,
+						picture: userGitHubData.avatar_url,
+					},
+				});
+			}
+
 			const token = jwt.sign(
 				{
-					id: userGitHubData.id.toString(),
-					avatar_url: userGitHubData.avatar_url,
-					accessToken: accessToken,
-					roles: {
-						isManager: userDBData ? userDBData.isManager : false,
-						isAdmin: userDBData ? userDBData.isAdmin : false,
-					},
+					email: userDBData.email,
 				},
-				process.env.JWT_SECRET
+				process.env.SECRET
 			);
 
 			res.redirect(`${process.env.SUCCESS_LOGIN_URL}?token=${token}`);

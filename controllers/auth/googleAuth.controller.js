@@ -1,6 +1,7 @@
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 import { response_401, response_500 } from "../../utils/responseCodes.js";
 import prisma from "../../config/db.config.js";
 dotenv.config();
@@ -19,7 +20,6 @@ passport.use(
 		},
 		async (req, accessToken, refreshToken, profile, cb) => {
 			try {
-                console.log(profile);
 				let user = await prisma.user.findUnique({
                     where: {
                         email: profile.emails[0].value,
@@ -27,6 +27,7 @@ passport.use(
                 });
 
 				if (user) {
+					console.log(user);
 					return cb(null, user);
 				}
 
@@ -37,8 +38,10 @@ passport.use(
 				};
 
 				user = await prisma.user.create({
-                    data: defaultUser,
-                });
+					name: `${profile.name.givenName} ${profile.name.familyName}`,
+					email: profile.emails[0].value,
+					picture: profile.photos[0].value,
+				});
 
 				return cb(null, user);
 			} catch (err) {
