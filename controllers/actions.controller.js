@@ -42,6 +42,21 @@ export const createAction = async (req, res) => {
 						projectId,
 						firstQuery,
 					},
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        pitch: true,
+                        firstQuery: true,
+                        project: {
+                            select: {
+                                id: true,
+                                title: true,
+                                description: true,
+                                primaryApiKey: true,
+                            }
+                        }
+                    }
 				});
         response_201(res, action);
     } catch (error) {
@@ -78,7 +93,6 @@ export const getAction = async (req, res) => {
                         id: true,
                         title: true,
                         description: true,
-                        pitch: true,
                         primaryApiKey: true,
                     }
                 } 

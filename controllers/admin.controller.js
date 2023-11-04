@@ -73,11 +73,19 @@ export const assignDev = async (req, res) => {
 		const { id } = req.params;
 		const role = req.query.role;
 		const devId = req.query.devId;
+
+		const user = await prisma.user.findUnique({
+			where: {
+				email : devId,
+			},
+		});
+
+		if(!user) return response_404(res, "User not found");
 		
 		const userProjectRelation = await prisma.userProjectRelation.create({
 			data: {
 				projectId: id,
-				userId: devId,
+				userId: user.id,
 				isAdmin: (role === "admin") ? true : false,
 			},
 		});	
@@ -93,12 +101,22 @@ export const unassignDev = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const devId = req.query.devId;
+
+		const user = await prisma.user.findUnique({
+			where: {
+				email : devId,
+			},
+		});
+
+		if(!user) return response_404(res, "User not found");
+
 		const userProjectRelation = await prisma.userProjectRelation.delete({
 			where: {
 				projectId: id,
-				userId: devId,
+				userId: user.id,
 			},
 		});
+		
 		response_200(res, "Developer unassigned successfully");
 	} catch (error) {
 		console.log(error);
@@ -231,17 +249,18 @@ export const getProject = async (req, res) => {
 }
 
 export const getAllProjects = async (req, res) => {
-	console.log(req.user);
 	try {
+		const { id } = req.params;
 		const projects = await prisma.project.findMany({
 			where: {
 				userProjects : {
 					some : {
-						userId : req.user.id,
+						userId : id,
 					}
 				}
 			},
 			select: {
+				id : true,
 				title: true,
 				description: true,
 				userProjects: {
@@ -358,11 +377,48 @@ export const createProject = async (req, res) => {
 export const deleteProject = async (req, res) => {
 	try {
 		const { id } = req.params;
+		const userProjectRelation = await prisma.userProjectRelation.deleteMany({
+			where: {
+				projectId: id,
+			},
+		});
+
+		const apiKeys = await prisma.apiKey.findMany({
+			where: {
+				projectId: id,
+			},
+		});
+
+		for (let i = 0; i < apiKeys.length; i++) {
+			const apiKey = apiKeys[i];
+			await prisma.apiKey.delete({
+				where: {
+					id: apiKey.id,
+				},
+			});
+		}
+
+		const actions = await prisma.action.findMany({
+			where: {
+				projectId: id,
+			},
+		});
+
+		for (let i = 0; i < actions.length; i++) {
+			const action = actions[i];
+			await prisma.action.delete({
+				where: {
+					id: action.id,
+				},
+			});
+		}
+
 		const project = await prisma.project.delete({
 			where: {
 				id,
 			},
 		});
+
 		response_200(res, "Project deleted successfully");
 	} catch (error) {
 		console.log(error);

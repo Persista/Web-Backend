@@ -54,7 +54,7 @@ model ApiKey {
     projectId String
     modelType ModelType
     apiKey String
-    apiKeyDescription String?
+    apiKeyDescription String? @db.LongText
 }
 
 model Action {
@@ -65,8 +65,8 @@ model Action {
     project   Project     @relation(fields: [projectId], references: [id])
     projectId String
     title String
-    description String
-    pitch String
+    description String  @db.LongText
+    pitch String @db.LongText
     chats Chat[]
 }
 
@@ -85,6 +85,6 @@ model Messages {
     updatedAt DateTime @updatedAt
     chat Chat @relation("Messages", fields: [chatId], references: [id])
     chatId String
-    message String
+    message String  @db.LongText
     isUser Boolean
 }

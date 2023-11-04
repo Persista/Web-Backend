@@ -14,7 +14,7 @@ import {
 
 //regenerate and delete primary api key routes and controllers are left to be implemented
 
-router.get('/projects', getAllProjects);
+router.get('/:id/projects', getAllProjects);
 router.get('/:id/keys', getAllKeys);
 router.post("/:id/keys", createKey);
 router.delete('/keys/:id', deleteKey);

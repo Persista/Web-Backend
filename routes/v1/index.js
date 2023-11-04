@@ -12,7 +12,7 @@ var router = Router();
 router.use("/admin", verifyAdmin, adminRouter);
 router.use("/auth", authRouter);
 router.post("/project", verifyUser, createProject);
-router.use("/:projectId/actions", verifyUser, actionsRoter);
+router.use("/actions", verifyUser, actionsRoter);
 router.use("/sdk", verifyApiKey, sdkRouter);
 
 
