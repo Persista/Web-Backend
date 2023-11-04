@@ -13,7 +13,7 @@ export async function verifyUser(req, res, next) {
 				email: decoded.email,
 			},
 		});
-		if (!user) return response_401(res, "User not found in Database");
+		if (!user) return response_401(res, "Unauthorised");
 		req.user = user;
 		next();
 	} catch (err) {
