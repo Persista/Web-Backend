@@ -1,6 +1,7 @@
 import { Router } from 'express';
 var router = Router();
 import {
+	getAllProjects,
 	getAllKeys, 
     getProject,
 	createKey,
@@ -13,6 +14,7 @@ import {
 
 //regenerate and delete primary api key routes and controllers are left to be implemented
 
+router.get('/projects', getAllProjects);
 router.get('/:id/keys', getAllKeys);
 router.post("/:id/keys", createKey);
 router.delete('/keys/:id', deleteKey);
@@ -20,7 +22,7 @@ router.get('/assign/:id', assignDev);
 router.get('/unassign', unassignDev);
 // router.get('/analytics', getAnalytics);
 router.post('edit', editProject);
-router.get('/projects', getProject);
+router.get('/:id', getProject);
 router.delete('/:id', deleteProject);
 
 export default router;

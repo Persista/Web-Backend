@@ -38,9 +38,7 @@ passport.use(
 				};
 
 				user = await prisma.user.create({
-					name: `${profile.name.givenName} ${profile.name.familyName}`,
-					email: profile.emails[0].value,
-					picture: profile.photos[0].value,
+					data: defaultUser,
 				});
 
 				return cb(null, user);

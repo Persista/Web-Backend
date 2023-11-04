@@ -134,56 +134,8 @@ export const editProject = async (req, res) => {
 				description,
 			},
 			select: {
-				userProjects: {
-					select: {
-						user: {
-							select: {
-								id: true,
-								name: true,
-								email: true,
-								picture: true,
-							},
-						},
-						isAdmin: true,
-					},
-				},
-				primaryApiKey: true,
-				chatEndpoint: true,
-				analyticsEndpoint: true,
-				apiKeys: {
-					select: {
-						id: true,
-						apiKey: true,
-						modelType: true,
-						apiKeyDescription: true,
-					},
-				},
-				actions: {
-					select: {
-						id: true,
-						title: true,
-						description: true,
-						pitch: true,
-						projectId: true,
-					},
-				},
-			},
-		});
-		res.status(200).json(project);
-	} catch (error) {
-		console.log(error);
-		response_500(res, error);
-	}
-}
-
-export const getProject = async (req, res) => {
-	try {
-		const { id } = req.params;
-		const project = await prisma.project.findUnique({
-			where: {
-				id,
-			},
-			select: {
+				title: true,
+				description: true,
 				userProjects: {
 					select: {
 						user: {
@@ -220,6 +172,114 @@ export const getProject = async (req, res) => {
 			},
 		});
 		response_200(res, project);
+	} catch (error) {
+		console.log(error);
+		response_500(res, error);
+	}
+}
+
+export const getProject = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const project = await prisma.project.findUnique({
+			where: {
+				id,
+			},
+			select: {
+				title: true,
+				description: true,
+				userProjects: {
+					select: {
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+								picture: true,
+							},
+						},
+						isAdmin: true,
+					},
+				},
+				primaryApiKey: true,
+				chatEndpoint: true,
+				analyticsEndpoint: true,
+				apiKeys: {
+					select: {
+						id: true,
+						apiKey: true,
+						modelType: true,
+						apiKeyDescription: true,
+					},
+				},
+				actions: {
+					select: {
+						id: true,
+						title: true,
+						description: true,
+						pitch: true,
+						projectId: true,
+					},
+				},
+			},
+		});
+		response_200(res, project);
+	} catch (error) {
+		console.log(error);
+		response_500(res, error);
+	}
+}
+
+export const getAllProjects = async (req, res) => {
+	console.log(req.user);
+	try {
+		const projects = await prisma.project.findMany({
+			where: {
+				userProjects : {
+					some : {
+						userId : req.user.id,
+					}
+				}
+			},
+			select: {
+				title: true,
+				description: true,
+				userProjects: {
+					select: {
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+								picture: true,
+							},
+						},
+						isAdmin: true,
+					},
+				},
+				primaryApiKey: true,
+				chatEndpoint: true,
+				analyticsEndpoint: true,
+				apiKeys: {
+					select: {
+						id: true,
+						apiKey: true,
+						modelType: true,
+						apiKeyDescription: true,
+					},
+				},
+				actions: {
+					select: {
+						id: true,
+						title: true,
+						description: true,
+						pitch: true,
+						projectId: true,
+					},
+				},
+			},
+		});
+		response_200(res, projects);
 	} catch (error) {
 		console.log(error);
 		response_500(res, error);
