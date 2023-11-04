@@ -1,4 +1,4 @@
-export function arrayToString(data) {
+export function objectToString(data) {
   const parts = [];
 
   for (const key in data) {

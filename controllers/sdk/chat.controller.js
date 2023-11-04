@@ -1,85 +1,85 @@
 import { query } from "express";
 import prisma from "../../config/db.config.js";
 import {
-	response_200,
-	response_401,
-	response_500,
-    response_404
+  response_200,
+  response_401,
+  response_500,
+  response_404,
 } from "../../utils/responseCodes.js";
 import axios from "axios";
+import { arrayToString, objectToString } from "../../utils/parseArray.js";
 
 const getQuery = (query, project, action, isFirst) => {
-    if(isFirst) return `I want to ${action.firstQuery}. ${query}. Here is a little information about ${project.title}. ${project.description}.`;
-    return `${query}`;
-}
+  if (isFirst)
+    return `I want to ${action.firstQuery}. ${query}. Here is a little information about ${project.title}. ${project.description}.`;
+  return `${query}`;
+};
 
 export const getLLMResponse = async (req, res) => {
-    try {
-        const {actionId, context, query} = req.body;
+  try {
+    const { actionId, context, query } = req.body;
 
-        model = "llamma";
-        
-        isFirst = false;
-        if(context[User].lenght>0) isFalse = true;
+    model = "llamma";
 
-        const action = await prisma.action.findUnique({
-            where: {
-                id: actionId
-            },
-        });
+    isFirst = false;
+    if (context[User].lenght > 0) isFalse = true;
 
-        
-        const project = await prisma.project.findUnique({
-					where: {
-						id: action.projectId,
-					},
-				});
+    const action = await prisma.action.findUnique({
+      where: {
+        id: actionId,
+      },
+    });
 
-        if(!project || !action) return response_404(res, "Project or Action not found");
+    const project = await prisma.project.findUnique({
+      where: {
+        id: action.projectId,
+      },
+    });
 
-        if(model==="llamma")
-        {
-            const response = await axios.post(project.chatEndpoint, {
-							query: getQuery(query, project, action, isFirst),
-							context: action.pitch,
-							history: parseContext(context),
-						});
-            response_200(res, response.data);
-        }
+    if (!project || !action)
+      return response_404(res, "Project or Action not found");
 
-    } catch (error) {
-        console.log(error);
-        response_500(res, error);
+    if (model === "llamma") {
+      const response = await axios.post(project.chatEndpoint, {
+        query: getQuery(query, project, action, isFirst),
+        context: action.pitch,
+        history: objectToString(context),
+      });
+      response_200(res, response.data);
     }
-}
+  } catch (error) {
+    console.log(error);
+    response_500(res, error);
+  }
+};
 
 export const createChat = async (req, res) => {
-    try {
-        const {actionId} = req.body;
+  try {
+    const { actionId } = req.body;
 
-        const action = await prisma.action.findUnique({
-            where: {
-                id: actionId
-            },
-        });
+    const action = await prisma.action.findUnique({
+      where: {
+        id: actionId,
+      },
+    });
 
-        const project = await prisma.project.findUnique({
-                    where: {
-                        id: action.projectId,
-                    },
-                });
-        
-        var query = action.firstQuery;
-        isFirst = true;
+    const project = await prisma.project.findUnique({
+      where: {
+        id: action.projectId,
+      },
+    });
 
-        if(!project || !action) return response_404(res, "Project or Action not found");
+    var query = action.firstQuery;
+    isFirst = true;
 
-            response_200(res, {
-                result : action.firstQuery,
-            });
-            
-    } catch (error) {
-        console.log(error);
-        response_500(res, error);
-    }
-}
+    if (!project || !action)
+      return response_404(res, "Project or Action not found");
+
+    response_200(res, {
+      result: action.firstQuery,
+    });
+  } catch (error) {
+    console.log(error);
+    response_500(res, error);
+  }
+};
