@@ -1,25 +1,31 @@
+const testObject = {
+  AI: ["a", "b", "c", "d", "e", "f", "g"],
+  User: ["e", "f", "g", "h", "i", "j", "k"],
+};
+
+const testString = "User:e;f;g;h;i;j;k;";
+
 export function objectToString(data) {
-  const parts = [];
+  const userArray = data.User;
 
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const values = data[key].join(";");
-      parts.push(`${key}:${values}`);
-    }
-  }
+  let res = "User:";
 
-  return parts.join("-");
+  let answers = userArray.join(";");
+
+  res += answers + ";";
+
+  return res;
 }
 
 export function stringToObject(string) {
-  const parts = string.split("-");
-  const result = {};
+  const array = string.split(":");
 
-  for (const part of parts) {
-    const [key, values] = part.split(":");
-    const valueArray = values.split(";");
-    result[key] = valueArray;
-  }
+  const userArray = array[1].split(";");
+  userArray.pop();
 
-  return result;
+  const res = {
+    User: userArray,
+  };
+
+  return res;
 }
