@@ -16,7 +16,7 @@ import {
 export const getAllActions = async (req, res) => {
     try {
         const { projectId } = req.params;
-        if(!id) return response_404(res, "Project ID not found");
+        if(!projectId) return response_404(res, "Project ID not found");
 
         const actions = await prisma.action.findMany({
             where: {
@@ -82,6 +82,7 @@ export const deleteAction = async (req, res) => {
 
 export const getAction = async (req, res) => {
     try {
+        console.log(req.params);
         const { id } = req.params;
         const action = await prisma.action.findUnique({
             where: {
