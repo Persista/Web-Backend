@@ -13,7 +13,7 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 app.use(helmet());
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "https://persista-webapp.vercel.app" }));
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
