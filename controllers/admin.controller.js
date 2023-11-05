@@ -236,7 +236,6 @@ export const getProject = async (req, res) => {
           select: {
             id: true,
             title: true,
-            description: true,
             pitch: true,
             projectId: true,
           },
@@ -293,7 +292,6 @@ export const getAllProjects = async (req, res) => {
           select: {
             id: true,
             title: true,
-            description: true,
             pitch: true,
             projectId: true,
           },
@@ -364,7 +362,6 @@ export const createProject = async (req, res) => {
           select: {
             id: true,
             title: true,
-            description: true,
             pitch: true,
             projectId: true,
           },
@@ -435,20 +432,20 @@ export const deleteProject = async (req, res) => {
 };
 
 export const regenerateKey = async (req, res) => {
-	try {
-	const { id } = req.params;
-	const apiKey = generateRandomAPIKey();
-	const key = await prisma.project.update({
-		where: {
-			id,
-		},
-		data: {
-			primaryApiKey: apiKey,
-		},
-	});
-	response_201(res, key);
+  try {
+    const { id } = req.params;
+    const apiKey = generateRandomAPIKey();
+    const key = await prisma.project.update({
+      where: {
+        id,
+      },
+      data: {
+        primaryApiKey: apiKey,
+      },
+    });
+    response_201(res, key);
   } catch (error) {
-	console.log(error);
-	response_500(res, error);
+    console.log(error);
+    response_500(res, error);
   }
-}
+};

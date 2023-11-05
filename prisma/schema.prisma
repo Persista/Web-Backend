@@ -65,7 +65,6 @@ model Action {
     project            Project  @relation(fields: [projectId], references: [id])
     projectId          String
     title              String
-    description        String   @db.LongText
     pitch              String   @db.LongText
     chats              Chat[]
     similarWords       String?  @db.LongText

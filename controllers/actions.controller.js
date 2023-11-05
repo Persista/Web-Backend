@@ -48,7 +48,6 @@ export const createAction = async (req, res) => {
       select: {
         id: true,
         title: true,
-        description: true,
         pitch: true,
         firstQuery: true,
         project: {
@@ -112,14 +111,13 @@ export const getAction = async (req, res) => {
 export const editAction = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, pitch } = req.body;
+    const { title, pitch } = req.body;
     const action = await prisma.action.update({
       where: {
         id,
       },
       data: {
         title,
-        description,
         pitch,
       },
     });
