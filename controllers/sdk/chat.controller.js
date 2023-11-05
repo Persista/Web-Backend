@@ -97,7 +97,7 @@ export const getLLMResponse = async (req, res) => {
       },
     });
 
-    await prisma.message.create({
+    await prisma.messages.create({
       data: {
         chatId: chatId,
         message: answer,
