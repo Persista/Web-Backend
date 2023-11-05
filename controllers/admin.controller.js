@@ -427,3 +427,22 @@ export const deleteProject = async (req, res) => {
     response_500(res, error);
   }
 };
+
+export const generateKey = async (req, res) => {
+	try {
+	const { id } = req.params;
+	const apiKey = generateRandomAPIKey();
+	const key = await prisma.project.update({
+		where: {
+			id,
+		},
+		data: {
+			primaryApiKey: apiKey,
+		},
+	});
+	response_201(res, key);
+  } catch (error) {
+	console.log(error);
+	response_500(res, error);
+  }
+}
