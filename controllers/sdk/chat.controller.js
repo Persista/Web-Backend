@@ -79,20 +79,25 @@ export const getLLMResponse = async (req, res) => {
 
     let history = "";
     chats.map((chat) => {
-      history += `{"input": "${chat.message}"}, {"output": "${chat.response}"},`;
+      history += `${chat.message}---${chat.response};`;
     });
 
-    if (!action) return response_404(res, "Action not found");
+    if (!chatObj) return response_404(res, "Action not found");
 
-    var response = await axios.post(project.chatEndpoint, {
-      query: answer,
-      context: getContext(chatObj.action),
-      instruction: chatObj.action.instruction,
-      history,
-      id: chatId,
+    let body = new FormData();
+    body.append("query", answer);
+    body.append("context", getContext(chatObj.action));
+    body.append("instruction", chatObj.action.instruction);
+    body.append("history", history);
+    body.append("id", chatId);
+
+    var response = await axios.post(chatObj.action.project.chatEndpoint, body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
-    await prisma.message.create({
+    await prisma.messages.create({
       data: {
         chatId: chatId,
         message: answer,
@@ -102,7 +107,7 @@ export const getLLMResponse = async (req, res) => {
       },
     });
 
-    if (response.data.status != 0) {
+    if (response.data.status !== 0) {
       await prisma.chat.update({
         where: {
           id: chatId,
