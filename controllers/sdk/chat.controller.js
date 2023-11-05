@@ -19,7 +19,7 @@ export const getLLMResponse = async (req, res) => {
   try {
     const { actionId, context, chatId, question, answer } = req.body;
 
-    isFirst = false;
+    isFirst = false;    
 
     model = "llamma";
 

@@ -21,7 +21,7 @@ router.delete('/keys/:id', deleteKey);
 router.get('/assign/:id', assignDev);
 router.get('/unassign', unassignDev);
 // router.get('/analytics', getAnalytics);
-router.post('edit', editProject);
+router.post('/:id/edit', editProject);
 router.get('/:id', getProject);
 router.delete('/:id', deleteProject);
 
