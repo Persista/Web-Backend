@@ -79,7 +79,7 @@ export const getLLMResponse = async (req, res) => {
 
     let history = "";
     chats.map((chat) => {
-      history += `{"input": "${chat.message}", "output": "${chat.response}"},`;
+      history += `{"input": "${chat.message}", "output": "${chat.response}"};`;
     });
 
     if (!chatObj) return response_404(res, "Action not found");
