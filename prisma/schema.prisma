@@ -33,7 +33,7 @@ model Project {
     description       String                @db.LongText
     createdAt         DateTime              @default(now())
     updatedAt         DateTime              @updatedAt
-    primaryApiKey     String
+    primaryApiKey     String                @unique
     chatEndpoint      String?
     analyticsEndpoint String?
     userProjects      UserProjectRelation[]
