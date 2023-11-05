@@ -143,6 +143,7 @@ export const editProject = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const { title, description, chatEndpoint } = req.body;
+		
 		const project = await prisma.project.update({
 			where: {
 				id,

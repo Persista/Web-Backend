@@ -5,9 +5,9 @@ export async function verifyApiKey(req, res, next) {
     const key = req.header("Authorization");
     if (!key) return response_401(res, "Unauthorized");
     try {
-        const match = await prisma.apiKey.findUnique({
+        const match = await prisma.project.findUnique({
 					where: {
-						apiKey : key,
+						primaryApiKey : key,
 					},
 				});
         if (!match) return response_401(res, "Unauthorized");
