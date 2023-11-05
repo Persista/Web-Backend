@@ -82,9 +82,9 @@ export const getLLMResponse = async (req, res) => {
       history += `{"input": "${chat.message}"}, {"output": "${chat.response}"},`;
     });
 
-    if (!action) return response_404(res, "Action not found");
+    if (!chatObj) return response_404(res, "Action not found");
 
-    var response = await axios.post(project.chatEndpoint, {
+    var response = await axios.post(chatObj.action.project.chatEndpoint, {
       query: answer,
       context: getContext(chatObj.action),
       instruction: chatObj.action.instruction,
@@ -102,7 +102,7 @@ export const getLLMResponse = async (req, res) => {
       },
     });
 
-    if (response.data.status != 0) {
+    if (response.data.status !== 0) {
       await prisma.chat.update({
         where: {
           id: chatId,
