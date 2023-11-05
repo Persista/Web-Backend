@@ -140,62 +140,61 @@ export const unassignDev = async (req, res) => {
 // };
 
 export const editProject = async (req, res) => {
-	try {
-		const { id } = req.params;
-		const { title, description, chatEndpoint } = req.body;
-		const project = await prisma.project.update({
-			where: {
-				id,
-			},
-			data: {
-				title,
-				description,
-				chatEndpoint,
-			},
-			select: {
-				title: true,
-				description: true,
-				userProjects: {
-					select: {
-						user: {
-							select: {
-								id: true,
-								name: true,
-								email: true,
-								picture: true,
-							},
-						},
-						isAdmin: true,
-					},
-				},
-				primaryApiKey: true,
-				chatEndpoint: true,
-				analyticsEndpoint: true,
-				apiKeys: {
-					select: {
-						id: true,
-						apiKey: true,
-						modelType: true,
-						apiKeyDescription: true,
-					},
-				},
-				actions: {
-					select: {
-						id: true,
-						title: true,
-						description: true,
-						pitch: true,
-						projectId: true,
-					},
-				},
-			},
-		});
-		response_200(res, project);
-	} catch (error) {
-		console.log(error);
-		response_500(res, error);
-	}
-}
+  try {
+    const { id } = req.params;
+    const { title, description, chatEndpoint } = req.body;
+    const project = await prisma.project.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        description,
+        chatEndpoint,
+      },
+      select: {
+        title: true,
+        description: true,
+        userProjects: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                picture: true,
+              },
+            },
+            isAdmin: true,
+          },
+        },
+        primaryApiKey: true,
+        chatEndpoint: true,
+        analyticsEndpoint: true,
+        apiKeys: {
+          select: {
+            id: true,
+            apiKey: true,
+            modelType: true,
+            apiKeyDescription: true,
+          },
+        },
+        actions: {
+          select: {
+            id: true,
+            title: true,
+            pitch: true,
+            projectId: true,
+          },
+        },
+      },
+    });
+    response_200(res, project);
+  } catch (error) {
+    console.log(error);
+    response_500(res, error);
+  }
+};
 
 export const getProject = async (req, res) => {
   try {
@@ -235,7 +234,6 @@ export const getProject = async (req, res) => {
           select: {
             id: true,
             title: true,
-            description: true,
             pitch: true,
             projectId: true,
           },
@@ -292,7 +290,6 @@ export const getAllProjects = async (req, res) => {
           select: {
             id: true,
             title: true,
-            description: true,
             pitch: true,
             projectId: true,
           },
@@ -363,7 +360,6 @@ export const createProject = async (req, res) => {
           select: {
             id: true,
             title: true,
-            description: true,
             pitch: true,
             projectId: true,
           },
@@ -434,20 +430,20 @@ export const deleteProject = async (req, res) => {
 };
 
 export const regenerateKey = async (req, res) => {
-	try {
-	const { id } = req.params;
-	const apiKey = generateRandomAPIKey();
-	const key = await prisma.project.update({
-		where: {
-			id,
-		},
-		data: {
-			primaryApiKey: apiKey,
-		},
-	});
-	response_201(res, key);
+  try {
+    const { id } = req.params;
+    const apiKey = generateRandomAPIKey();
+    const key = await prisma.project.update({
+      where: {
+        id,
+      },
+      data: {
+        primaryApiKey: apiKey,
+      },
+    });
+    response_201(res, key);
   } catch (error) {
-	console.log(error);
-	response_500(res, error);
+    console.log(error);
+    response_500(res, error);
   }
-}
+};
