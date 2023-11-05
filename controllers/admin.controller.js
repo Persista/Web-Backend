@@ -333,6 +333,8 @@ export const createProject = async (req, res) => {
         id: project.id,
       },
       select: {
+        title: true,
+        description: true,
         userProjects: {
           select: {
             user: {
@@ -366,6 +368,9 @@ export const createProject = async (req, res) => {
             projectId: true,
           },
         },
+      },
+      order: {
+        createdAt: "desc",
       },
     });
 
