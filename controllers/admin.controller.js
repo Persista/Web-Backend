@@ -142,7 +142,7 @@ export const unassignDev = async (req, res) => {
 export const editProject = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { title, description } = req.body;
+		const { title, description, chatEndpoint } = req.body;
 		const project = await prisma.project.update({
 			where: {
 				id,
@@ -150,6 +150,7 @@ export const editProject = async (req, res) => {
 			data: {
 				title,
 				description,
+				chatEndpoint,
 			},
 			select: {
 				title: true,
