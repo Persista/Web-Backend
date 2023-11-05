@@ -1,6 +1,7 @@
 import { Router } from 'express';
 var router = Router();
 import {
+	regenerateKey,
 	getAllProjects,
 	getAllKeys, 
     getProject,
@@ -24,5 +25,6 @@ router.get('/unassign', unassignDev);
 router.post('/:id/edit', editProject);
 router.get('/:id', getProject);
 router.delete('/:id', deleteProject);
+router.get('/:id/regenerate', regenerateKey);
 
 export default router;
