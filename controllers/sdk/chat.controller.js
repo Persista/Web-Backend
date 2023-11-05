@@ -84,12 +84,17 @@ export const getLLMResponse = async (req, res) => {
 
     if (!chatObj) return response_404(res, "Action not found");
 
-    var response = await axios.post(chatObj.action.project.chatEndpoint, {
-      query: answer,
-      context: getContext(chatObj.action),
-      instruction: chatObj.action.instruction,
-      history,
-      id: chatId,
+    let body = new FormData();
+    body.append("query", answer);
+    body.append("context", getContext(chatObj.action));
+    body.append("instruction", chatObj.action.instruction);
+    body.append("history", history);
+    body.append("id", chatId);
+
+    var response = await axios.post(chatObj.action.project.chatEndpoint, body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     await prisma.message.create({
