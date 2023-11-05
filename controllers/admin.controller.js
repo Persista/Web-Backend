@@ -433,7 +433,7 @@ export const deleteProject = async (req, res) => {
   }
 };
 
-export const generateKey = async (req, res) => {
+export const regenerateKey = async (req, res) => {
 	try {
 	const { id } = req.params;
 	const apiKey = generateRandomAPIKey();

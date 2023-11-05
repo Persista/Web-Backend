@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { getLLMResponse, createChat } from "../../controllers/sdk/chat.controller";
-import { verifyApiKey } from "../../middleware/sdk.middleware";
+import { getLLMResponse, createChat } from "../../controllers/sdk/chat.controller.js";
+import { verifyApiKey } from "../../middleware/sdk.middleware.js";
 
 var router = Router();
 
